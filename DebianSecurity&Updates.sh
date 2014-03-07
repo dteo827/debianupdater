@@ -21,6 +21,9 @@ printf "
     ##############################################################\n\n"
 
 
+#initialize bastille & fail2ban as not installed
+bastilleinstalled = n
+fail2baninstalled = n
 
 # Questions function
 function questions() {
@@ -188,6 +191,51 @@ fi
 function pause () {
         read -p "$*"
 }
+
+if [[ $bastilleinstalled = y]] ; then
+    read -p "Do you want to configure Bastille? [y/n]" answerConfigBastille
+fi
+
+if [[answerConfigBastille = y]] ;
+    printf"Here we go....
+
+        #################################
+        #This is what you need to select#
+        #################################
+
+#File permissions module: Yes (suid)
+#Disable SUID for mount/umount: Yes
+#Disable SUID on ping: Yes
+#Disable clear-text r-protocols that use IP-based authentication? Yes
+#Enforce password aging? No (situation dependent, I have no users accessing my machines except me, and I only allow ssh keys)
+#Default umask: Yes
+#Umask: 077
+#Disable root login on tty’s 1-6: No
+#Password protect GRUB prompt: No (situation dependent, I’m on a VPS and would like to get support in case I need it)
+#Password protect su mode: Yes
+#default-deny on tcp-wrappers and xinetd? No
+#Ensure telnet doesn’t run? Yes
+#Ensure FTP does not run? Yes
+#Display authorized use message? No (situation dependent, if you had other users, Yes)
+#Put limits on system resource usage? Yes
+#Restrict console access to group of users? Yes (then choose root)
+#Add additional logging? Yes
+#Setup remote logging if you have a remote log host, I don’t so I answered No
+#Setup process accounting? Yes
+#Disable acpid? Yes
+#Deactivate nfs + samba? Yes (situation dependent)
+#Stop sendmail from running in daemon mode? No (I have this firewalled off, so I’m not concerned)
+#Deactivate apache? Yes
+#Disable printing? Yes
+#TMPDIR/TMP scripts? No (if a multi-user system, yes)
+#Packet filtering script? No (we configured the firewall previously)
+#Finished? YES! & reboot"
+    sudo bastille
+fi
+
+if [[fail2baninstalled = y]] ; then
+    read -p "Do you want to configure fail2ban? [y/n]" answerConfigfail2ban
+fi
 
 pause '
     Press [Enter] key to exit...
