@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Debian Configuration and Updater version 1.1
+# Debian Configuration and Updater version 1.2
 # This script is intended for use in Debian Linux Installations
 # Thanks to Pashapasta for the script template, check out the Kali version at https://github.com/PashaPasta/KaliUpdater/blob/master/KaliConfigAndUpdate.sh
 # Please contact dteo827@gmail.com with bugs or feature requests
