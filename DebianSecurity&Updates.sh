@@ -10,7 +10,11 @@ printf "
                     #############################
                     # Debian Security & Updates #
                     #############################
-
+                    
+                   #################################
+                   #This script MUST be run as root#
+                   #################################
+                    
     ##############################################################
     # Welcome, you will be presented with a few questions, please#
     #          answer [y/n] according to your needs.             #
@@ -20,13 +24,13 @@ printf "
 
 # Questions function
 function questions() {
-read -p "Do you want to add Google DNS (8.8.8.8) to the resolv.conf file? [y/n]" answerGoogleDNS
+read -p "Do you want to add Google's and Level3's Public DNS to the resolv.conf file? [y/n]" answerGoogleDNS
 read -p "Do you want to turn off root login, Ipv6, keep boot as read only,and ignore ICMP broadcast requests? [y/n]" answerWegettinghard
 read -p "Do you want to install updates to Debian Linux now? [y/n] " answerUpdate
 read -p "Do you want to install Bastille [y/n]" answerBastille
 read -p "Do you want to install Fail2ban [y/n]" answerFail2ban
 read -p "Do you want to install Curl [y/n]" answerCurl
-read -p "Do you want to setup OpenVAS? (Note: You will be prompted to enter a password for the OpenVAS admin user, this process may take up to an hour) [y/n] " answerOpenVAS
+read -p "Do you want to setup OpenVAS? IF THIS IS A SERVER INSTALL SELECT NO!!! (Note: You will be prompted to enter a password for the OpenVAS admin user, this process may take up to an hour) [y/n] " answerOpenVAS
 read -p "Do you want to update Nikto's definitions? [y/n] " answerNikto
 read -p "Do you want to install PHP5? [y/n] " answerPhp
 read -p "Do you want to install Mysql? [y/n]" answerMysql
@@ -36,6 +40,7 @@ read -p "Do you want to download (not install) Leopard Flower [y/n]" answerLeopa
 # Flags!!!!
 # If script run with -a flag, all options will automatically default to yes
 # IF script run with -h flag, README.md will be displayed
+# If script run with -s flag, only items that should be used on a server install will be set to yes
 
 if [[ $1 = -a ]] ; then
 
@@ -53,10 +58,22 @@ if [[ $1 = -a ]] ; then
         answerMysql=y
         answerLeopardFlower=y
     else
-        printf "Verify would you do an do not want done...."
+        printf "Verify would you do and do not want done...."
         sleep 2
         questions
 fi
+
+elif [[ $1 = -s ]] ; then
+
+        answerGoogleDNS=y
+        answerWegettinghard=y
+        answerUpdate=y
+        answerBastille=y
+        answerFail2ban=y
+        answerCurl=y
+        answerPhp=y
+        answerMysql=y
+        answerLeopardFlower=y
 
 elif [[ $1 = -h ]] ; then
 
@@ -72,14 +89,17 @@ fi
 if [[ $answerGoogleDNS = y ]] ; then
 
     echo nameserver 8.8.8.8 >> /etc/resolv.conf
+    echo nameserver 8.8.4.4 >> /etc/resolv.conf
+    echo nameserver 4.2.2.2 >> /etc/resolv.conf
 fi
 
-if [[ $answerWegettinghard = y]] ; then
-    printf " type 'PermitRootLogin no'"
-    nano /etc/ssh/sshd_config
+if [[ $answerWegettinghard = y]] ; then  #Commented out several lines.  Dumping this text to text file with directions
+    #printf " type 'PermitRootLogin no'"
+    #nano /etc/ssh/sshd_config
     printf " type NETWORKING_IPV6=no "
     printf "IPV6INIT=no"
-    nano /etc/sysconfig/network
+    nano /etc/sysconfig/network  #This is not a standard file location in Debian ~ PashaPasta
+    sed -i 's/PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config  #automated above lines for ssh config
     echo LABEL=/boot     /boot     ext2     defaults,ro     1 2 >> /etc/fstab
     echo Ignore ICMP request: >> /etc/sysctl.conf
     echo net.ipv4.icmp_echo_ignore_all = 1 >> /etc/sysctl.conf
@@ -124,7 +144,8 @@ fi
 
 if [[ $answerNikto = y]] ; then
     wget https://www.cirt.net/nikto/nikto-2.1.5.tar.bz2
-    tar zxvf nikto-2.1.5.tar.bz2
+    tar -zxvf nikto-2.1.5.tar.bz2
+    chmod +x /nikto-2.1.5/nikto.pl
     printf " To start Nikto run 'cd nikto-2.1.4' and 'perl nikto.pl'
     "
 fi
@@ -133,12 +154,14 @@ if [[ $answerPhp = y]] ; then
     apt-get install php5-mysql
 fi
 
-if [[ $answerMysql = y]] ; then
-    apt-get install mysql-server
-fi
-
 if [[ $answerLeopardFlower = y ]] ; then
     wget http://iweb.dl.sourceforge.net/project/leopardflower/Source/lpfw-0.4-src.zip
+fi
+
+if [[ $answerMysql = y]] ; then
+    apt-get install mysql-server
+    printf " Starting mysql_secure_installation script...standby for input..."
+    mysql_secure_installation
 fi
 
 # Not sure about this part
