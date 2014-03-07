@@ -112,7 +112,7 @@ if [[ $answerUpdate = y ]] ; then
 
     printf "Updating Debain, this stage may take about an hour to complete...Hope you have some time to burn...
     "
-    apt-get update -qq && apt-get -y upgrade -qq && apt-get -y dist-upgrade -qq
+    apt-get update -qq && apt-get -y upgrade -qq && apt-get -y dist-upgrade -qq && apt-get -y purge -qq && apt-get -y autoremove -qq && apt-get -y clean -qq
 fi
 
 if [[ $answerBastille = y ]] ; then
