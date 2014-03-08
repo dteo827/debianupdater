@@ -91,23 +91,18 @@ fi
 
 if [[ $answerGoogleDNS = y ]] ; then
 
-    echo nameserver 8.8.8.8 >> /etc/resolv.conf
-    echo nameserver 8.8.4.4 >> /etc/resolv.conf
-    echo nameserver 4.2.2.2 >> /etc/resolv.conf
+    sudo echo nameserver 8.8.8.8 >> /etc/resolv.conf
+    sudo echo nameserver 8.8.4.4 >> /etc/resolv.conf
+    sudo echo nameserver 4.2.2.2 >> /etc/resolv.conf
 fi
 
-if [[ $answerWegettinghard = y]] ; then  #Commented out several lines.  Dumping this text to text file with directions
-    #printf " type 'PermitRootLogin no'"
-    #nano /etc/ssh/sshd_config
-    printf " type NETWORKING_IPV6=no "
-    printf "IPV6INIT=no"
-    nano /etc/sysconfig/network  #This is not a standard file location in Debian ~ PashaPasta
-    sed -i 's/PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config  #automated above lines for ssh config
-    echo LABEL=/boot     /boot     ext2     defaults,ro     1 2 >> /etc/fstab
-    echo Ignore ICMP request: >> /etc/sysctl.conf
-    echo net.ipv4.icmp_echo_ignore_all = 1 >> /etc/sysctl.conf
-    echo Ignore Broadcast request: >> /etc/sysctl.conf
-    echo net.ipv4.icmp_echo_ignore_broadcasts = 1 >> /etc/sysctl.conf
+if [[ $answerWegettinghard = y ]] ; then
+    sudo sed -i 's/PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config  #automated above lines for ssh config
+    sudo echo LABEL=/boot     /boot     ext2     defaults,ro     1 2 >> /etc/fstab
+    sudo echo Ignore ICMP request: >> /etc/sysctl.conf
+    sudo echo net.ipv4.icmp_echo_ignore_all = 1 >> /etc/sysctl.conf
+    sudo echo Ignore Broadcast request: >> /etc/sysctl.conf
+    sudo echo net.ipv4.icmp_echo_ignore_broadcasts = 1 >> /etc/sysctl.conf
     sysctl -p
 fi
 
@@ -115,7 +110,7 @@ if [[ $answerUpdate = y ]] ; then
 
     printf "Updating Debain, this stage may take about an hour to complete...Hope you have some time to burn...
     "
-    apt-get update -qq && apt-get -y upgrade -qq && apt-get -y dist-upgrade -qq && apt-get -y purge -qq && apt-get -y autoremove -qq && apt-get -y clean -qq
+    sudo apt-get update -qq && apt-get -y upgrade -qq && apt-get -y dist-upgrade -qq && apt-get -y purge -qq && apt-get -y autoremove -qq && apt-get -y clean -qq
 fi
 
 if [[ $answerBastille = y ]] ; then
@@ -123,15 +118,15 @@ if [[ $answerBastille = y ]] ; then
 fi
 
 if [[ $answerFail2ban = y ]] ; then
-    apt-get install fail2ban
+    sudo apt-get install fail2ban
 fi
 
 if [[ $answerOpenVAS = y ]] ; then
-    echo "deb http://download.opensuse.org/repositories/security:/OpenVAS:/UNSTABLE:/v5/Debian_6.0/ ./" >> /etc/apt/sources.list
-    apt-key adv --keyserver hkp://keys.gnupg.net --recv-keys BED1E87979EAFD54
-    apt-get -y install greenbone-security-assistant gsd openvas-cli openvas-manager openvas-scanner openvas-administrator sqlite3 xsltproc
-    apt-get -y install texlive-latex-base texlive-latex-extra texlive-latex-recommended htmldoc
-    apt-get -y install alien rpm nsis fakeroot
+    sudo echo "deb http://download.opensuse.org/repositories/security:/OpenVAS:/UNSTABLE:/v5/Debian_6.0/ ./" >> /etc/apt/sources.list
+    sudo apt-key adv --keyserver hkp://keys.gnupg.net --recv-keys BED1E87979EAFD54
+    sudo apt-get -y install greenbone-security-assistant gsd openvas-cli openvas-manager openvas-scanner openvas-administrator sqlite3 xsltproc
+    sudo apt-get -y install texlive-latex-base texlive-latex-extra texlive-latex-recommended htmldoc
+    sudo apt-get -y install alien rpm nsis fakeroot
 # not sure about what's below....
     echo ...Starting OpenVAS setup...Please be ready to enter desired OpenVAS admin password
     mkdir /var/log/Updater
@@ -142,27 +137,27 @@ if [[ $answerOpenVAS = y ]] ; then
 fi
 
 if [[ $answerCurl = y ]] ; then
-    apt-get install curl
+    sudo apt-get install curl
 fi
 
-if [[ $answerNikto = y]] ; then
+if [[ $answerNikto = y ]] ; then
     wget https://www.cirt.net/nikto/nikto-2.1.5.tar.bz2
-    tar -zxvf nikto-2.1.5.tar.bz2
+    tar xjf nikto-2.1.5.tar.bz2
     chmod +x /nikto-2.1.5/nikto.pl
     printf " To start Nikto run 'cd nikto-2.1.4' and 'perl nikto.pl'
     "
 fi
 
-if [[ $answerPhp = y]] ; then
-    apt-get install php5-mysql
+if [[ $answerPhp = y ]] ; then
+    sudo apt-get install php5-mysql
 fi
 
 if [[ $answerLeopardFlower = y ]] ; then
     wget http://iweb.dl.sourceforge.net/project/leopardflower/Source/lpfw-0.4-src.zip
 fi
 
-if [[ $answerMysql = y]] ; then
-    apt-get install mysql-server
+if [[ $answerMysql = y ]] ; then
+    sudo apt-get install mysql-server
     printf " Starting mysql_secure_installation script...standby for input..."
     mysql_secure_installation
 fi
@@ -192,11 +187,11 @@ function pause () {
         read -p "$*"
 }
 
-if [[ $bastilleinstalled = y]] ; then
+if [[ $bastilleinstalled = y ]] ; then
     read -p "Do you want to configure Bastille? [y/n]" answerConfigBastille
 fi
 
-if [[answerConfigBastille = y]] ;
+if [[ answerConfigBastille = y ]] ;
     printf"Here we go....
 
         #################################
@@ -233,7 +228,7 @@ if [[answerConfigBastille = y]] ;
     sudo bastille
 fi
 
-if [[fail2baninstalled = y]] ; then
+if [[ fail2baninstalled = y ]] ; then
     read -p "Do you want to configure fail2ban? [y/n]" answerConfigfail2ban
 fi
 
