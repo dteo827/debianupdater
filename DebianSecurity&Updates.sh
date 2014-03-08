@@ -134,9 +134,9 @@ if [[ $answerOpenVAS = y ]] ; then
     apt-get -y install alien rpm nsis fakeroot
 # not sure about what's below....
     echo ...Starting OpenVAS setup...Please be ready to enter desired OpenVAS admin password
-
+    mkdir /var/log/Updater
     openvas-setup
-    openvas-setup --check-install > /root/Desktop/openvas-info.txt
+    openvas-setup --check-install > /var/log/Updater/openvas-info.log
     openvas-nvt-sync
     openvas-feed-update
 fi
@@ -171,16 +171,16 @@ fi
 # If OpenVAS was installed, check for error file, if present, print alert
 
 function filecheck () {
-    file="/root/Desktop/openvas-info.txt"
+    file="/var/log/Updater/openvas-info.log"
 
     if [ -f "$file" ] ; then
-        printf "Check /root/Desktop/openvas-info.txt for errors and recommendations
+        printf "Check /var/log/Updater/openvas-info.log for errors and recommendations
         "
     fi
 }
 if [[ $answerOpenVAS = y ]] ; then
 
-file="/root/Desktop/openvas-info.txt"
+file="/var/log/Updater/openvas-info.log"
 
     filecheck
     printf "Note: OpenVAS user name is [admin]
