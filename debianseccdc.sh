@@ -27,9 +27,7 @@ read -p "Do you want to turn off root login, Ipv6, keep boot as read only,and ig
 read -p "Do you want to install updates to Debian Linux now? [y/n] " answerUpdate
 read -p "Do you want to install Lynis [y/n]" answerLynis
 read -p "Do you want to install Fail2ban [y/n]" answerFail2ban
-read -p "Do you want to install Curl [y/n]" answerCurl
-read -p "Do you want to setup OpenVAS? IF THIS IS A SERVER INSTALL SELECT NO!!! (Note: You will be prompted to enter a password for the OpenVAS admin user, this process may take up to an hour) [y/n] " answerOpenVAS
-read -p "Do you want to update Nikto's definitions? [y/n] " answerNikto
+#read -p "Do you want to update Nikto's definitions? [y/n] " answerNikto
 }
 
 # Flags!!!!
@@ -80,6 +78,10 @@ if [[ $answerWegettinghard = y ]] ; then
     echo deb-src http://http.debian.net/debian/ squeeze main contrib non-free >> /etc/apt/sources.list
     echo deb http://http.debian.net/debian squeeze-lts main contrib non-free >> /etc/apt/sources.list
     echo deb-src http://http.debian.net/debian squeeze-lts main contrib non-free >> /etc/apt/sources.list
+    echo deb http://ftp.de.debian.org/debian squeeze-lts main  >>  /etc/apt/sources.list
+    wget http://http.us.debian.org/debian/pool/main/d/debian-security-support/debian-security-support_2014.12.17~bpo60+1_all.deb -O debian-security-support.deb
+    ./debian-security-support.deb
+
     #disable rootlogin
     sed -i 's/PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config  #automated above lines for ssh config
     #ignore ICMP/Pings
@@ -94,7 +96,9 @@ if [[ $answerUpdate = y ]] ; then
 
     printf "Updating Debain, this stage may take about an hour to complete...Hope you have some time to burn...
     "
-    apt-get update -qq && apt-get -y upgrade -qq && apt-get -y dist-upgrade -qq && apt-get -y purge -qq && apt-get -y autoremove -qq && apt-get -y clean -qq
+    apt-get update -qq && apt-get -y upgrade -qq && apt-get -y purge -qq && apt-get -y autoremove -qq && apt-get -y clean -qq
+    apt-get install --only-upgrade bash
+    
 fi
 
 if [[ $answerLynis = y ]] ; then
