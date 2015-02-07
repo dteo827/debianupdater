@@ -107,39 +107,6 @@ if [[ $answerFail2ban = y ]] ; then
     apt-get install fail2ban
 fi
 
-if [[ $answerOpenVAS = y ]] ; then
-    echo "deb http://download.opensuse.org/repositories/security:/OpenVAS:/UNSTABLE:/v5/Debian_6.0/ ./" >> /etc/apt/sources.list
-    apt-key adv --keyserver hkp://keys.gnupg.net --recv-keys BED1E87979EAFD54
-    apt-get -y install greenbone-security-assistant gsd openvas-cli openvas-manager openvas-scanner openvas-administrator sqlite3 xsltproc
-    apt-get -y install texlive-latex-base texlive-latex-extra texlive-latex-recommended htmldoc
-    apt-get -y install alien rpm nsis fakeroot
-# not sure about what's below....
-    echo ...Starting OpenVAS setup...Please be ready to enter desired OpenVAS admin password
-    mkdir /var/log/Updater
-    openvas-setup
-    openvas-setup --check-install > /var/log/Updater/openvas-info.log
-    openvas-nvt-sync
-    openvas-feed-update
-fi
-
-function filecheck () {
-    file="/var/log/Updater/openvas-info.log"
-
-    if [ -f "$file" ] ; then
-        printf "Check /var/log/Updater/openvas-info.log for errors and recommendations
-        "
-    fi
-}
-if [[ $answerOpenVAS = y ]] ; then
-
-file="/var/log/Updater/openvas-info.log"
-
-    filecheck
-    printf "Note: OpenVAS user name is [admin]
-    "
-    sleep 3
-fi
-
 function pause () {
         read -p "$*"
 }
