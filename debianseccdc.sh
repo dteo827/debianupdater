@@ -81,12 +81,12 @@ if [[ $answerWegettinghard = y ]] ; then
     echo deb http://http.debian.net/debian squeeze-lts main contrib non-free >> /etc/apt/sources.list
     echo deb-src http://http.debian.net/debian squeeze-lts main contrib non-free >> /etc/apt/sources.list
     #disable rootlogin
-    sudo sed -i 's/PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config  #automated above lines for ssh config
+    sed -i 's/PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config  #automated above lines for ssh config
     #ignore ICMP/Pings
-    sudo echo Ignore ICMP request: >> /etc/sysctl.conf
-    sudo echo net.ipv4.icmp_echo_ignore_all = 1 >> /etc/sysctl.conf
-    sudo echo Ignore Broadcast request: >> /etc/sysctl.conf
-    sudo echo net.ipv4.icmp_echo_ignore_broadcasts = 1 >> /etc/sysctl.conf
+    echo Ignore ICMP request: >> /etc/sysctl.conf
+    echo net.ipv4.icmp_echo_ignore_all = 1 >> /etc/sysctl.conf
+    echo Ignore Broadcast request: >> /etc/sysctl.conf
+    echo net.ipv4.icmp_echo_ignore_broadcasts = 1 >> /etc/sysctl.conf
     sysctl -p
 fi
 
@@ -94,25 +94,25 @@ if [[ $answerUpdate = y ]] ; then
 
     printf "Updating Debain, this stage may take about an hour to complete...Hope you have some time to burn...
     "
-    sudo apt-get update -qq && apt-get -y upgrade -qq && apt-get -y dist-upgrade -qq && apt-get -y purge -qq && apt-get -y autoremove -qq && apt-get -y clean -qq
+    apt-get update -qq && apt-get -y upgrade -qq && apt-get -y dist-upgrade -qq && apt-get -y purge -qq && apt-get -y autoremove -qq && apt-get -y clean -qq
 fi
 
 if [[ $answerLynis = y ]] ; then
-    wget https://cisofy.com/files/lynis-1.6.4.tar.gz -O lynis.tar.gz
+    wget https://cisofy.com/files/lynis-1.6.4.tar.gz -O lynis.tar.gz --no-check-certificate
     tar -zxvf lynis.tar.gz
 
 fi
 
 if [[ $answerFail2ban = y ]] ; then
-    sudo apt-get install fail2ban
+    apt-get install fail2ban
 fi
 
 if [[ $answerOpenVAS = y ]] ; then
-    sudo echo "deb http://download.opensuse.org/repositories/security:/OpenVAS:/UNSTABLE:/v5/Debian_6.0/ ./" >> /etc/apt/sources.list
-    sudo apt-key adv --keyserver hkp://keys.gnupg.net --recv-keys BED1E87979EAFD54
-    sudo apt-get -y install greenbone-security-assistant gsd openvas-cli openvas-manager openvas-scanner openvas-administrator sqlite3 xsltproc
-    sudo apt-get -y install texlive-latex-base texlive-latex-extra texlive-latex-recommended htmldoc
-    sudo apt-get -y install alien rpm nsis fakeroot
+    echo "deb http://download.opensuse.org/repositories/security:/OpenVAS:/UNSTABLE:/v5/Debian_6.0/ ./" >> /etc/apt/sources.list
+    apt-key adv --keyserver hkp://keys.gnupg.net --recv-keys BED1E87979EAFD54
+    apt-get -y install greenbone-security-assistant gsd openvas-cli openvas-manager openvas-scanner openvas-administrator sqlite3 xsltproc
+    apt-get -y install texlive-latex-base texlive-latex-extra texlive-latex-recommended htmldoc
+    apt-get -y install alien rpm nsis fakeroot
 # not sure about what's below....
     echo ...Starting OpenVAS setup...Please be ready to enter desired OpenVAS admin password
     mkdir /var/log/Updater
