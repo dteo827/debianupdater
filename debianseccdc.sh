@@ -61,7 +61,7 @@ elif [[ $1 = -s ]] ; then
         answerUpdate=y
         answerLynis=y
         answerFail2ban=y
-
+else
     questions
 fi
 
