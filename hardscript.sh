@@ -1,7 +1,6 @@
 #!/bin/bash
 
-
-# Debian Configuration and Updater version 1.4
+# Debian Configuration and Updater version 1.3
 # This script is intended for use in Debian Linux Installations
 # Thanks to Pashapasta for the script template, check out the Kali version at https://github.com/PashaPasta/KaliUpdater/blob/master/KaliConfigAndUpdate.sh
 # Please contact dteo827@gmail.com with bugs or feature requests
@@ -23,9 +22,9 @@ printf "
 
 # Questions function
 function questions() {
+read -p "Do you want to update bash? [y/n] " answerUpdateBash
 read -p "Do you want to add Google's and Level3's Public DNS to the resolv.conf file? [y/n]" answerGoogleDNS
 read -p "Do you want to fix the secruity repos to archive repos? [y/n]" answerFixRepos
-read -p "Do you want to install *ONLY* security updates to CentOS Linux now? [y/n] " answerSecUpdate
 read -p "Do you want to install *ALL* updates to Ubuntu Linux now? [y/n] " answerUpdate
 read -p "Do you want to turn off root login, Ipv6, keep boot as read only,and ignore ICMP broadcast requests and prevent XSS attacks? [y/n]" answermasshardening
 read -p "Do you want to install Bastille [y/n]" answerBastille
@@ -34,13 +33,23 @@ read -p "Do you want to install Lynis [y/n]" answerLynis
 
 # If script run with -a flag, all options will automatically default to yes
 
+echo "version"
+lsb_release -r >> file
+uname -r >> file
+echo date >> file
+echo
+echo "my name" >> file
+echo
+echo dpkg -l >> file
+
 if [[ $1 = -a ]] ; then
 
     read -p "Are you sure you want to install all packages and configure everything by default? Only Security Updates will be installed [y/n] " answerWarning
     if [[ $answerWarning = y ]] ; then
         answerGoogleDNS=y
+        answerUpdateBash
         answerFixRepos=y
-        answerSecUpdate=y
+        answerUpdate=y
         answermasshardening=y
         answerBastille=y
         answerLynis=y
@@ -58,6 +67,21 @@ fi
 
 # Logic for update and configuration steps
 
+if [[ $answerUpdateBash = y ]] ; then
+    cd /src
+    wget http://ftp.gnu.org/gnu/bash/bash-4.3.tar.gz
+    #download all patches
+    for i in $(seq -f "%03g" 1 28); do wget http://ftp.gnu.org/gnu/bash/bash-4.3-patches/bash43-$i; done
+    tar zxvf bash-4.3.tar.gz
+    cd bash-4.3
+    #apply all patches
+    for i in $(seq -f "%03g" 1 28);do patch -p0 < ../bash43-$i; done
+    #build and install
+    ./configure --prefix=/ && make && make install
+    cd /root
+    rm -r src
+fi
+
 if [[ $answerGoogleDNS = y ]] ; then
 
     echo nameserver 8.8.8.8 >> /etc/resolv.conf
@@ -69,11 +93,10 @@ fi
 if  [[$answerFixRepos = y]] ; then
      #change old repos to archive.ubuntu so they work
     cp /etc/apt/sources.list /etc/apt/sources.list.bak
-    cat << EOF > /etc/apt/sources.list 
     #actual list
-    deb http://archive.debian.org/debian-archive/debian/ lenny main contrib non-free
-    deb http://archive.debian.org/debian-security/ lenny/updates main contrib non-free
-    EOF
+    echo deb http://archive.debian.org/debian-archive/debian/ lenny main contrib non-free > /etc/apt/sources.list 
+    echo deb http://archive.debian.org/debian-security/ lenny/updates main contrib non-free >> /etc/apt/sources.list 
+
     echo "Updated Source list, this task was completed at: " $(date) >> changes
 fi
 
@@ -99,9 +122,18 @@ if [[ $answerBastille = y ]] ; then
     sudo apt-get install bastille perl-tk
 
 if [[ $answerLynis = y ]] ; then
-    wget https://cisofy.com/files/lynis-1.6.4.tar.gz -O lynis.tar.gz
+    wget https://cisofy.com/files/lynis-1.6.4.tar.gz -O lynis.tar.gz --no-check-certificate
     tar -zxvf lynis.tar.gz
 fi
+
+echo "version"
+lsb_release -r >> file
+uname -r >> file
+echo date >> file
+echo
+echo "my name" >> file
+echo
+echo dpkg -l >> file
 
 function pause () {
         read -p "$*"
