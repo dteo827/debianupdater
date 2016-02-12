@@ -1,3 +1,4 @@
+#!/bin/bash
 wget --no-check-certificate https://cisofy.com/files/lynis-2.1.1.tar.gz
 tar -xzvf lynis-2.1.1.tar.gz
 cd lynis
