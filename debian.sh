@@ -37,23 +37,6 @@ echo "my name" >> file
 echo
 echo dpkg -l >> file
 
-echo "1"
-
-if [[ $1 = -a ]] ; then
-
-    read -p "Are you sure you want to install all packages and configure everything by default? Only Security Updates will be installed [y/n] " answerWarning
-    if [[ $answerWarning = y ]] ; then
-        answerUpdateBash=y
-		answerGoogleDNS=y        
-        answerFixRepos=y
-        answermasshardening=y
-        answerLynis=y
-        answerFail2ban=y
-    else
-        printf "Verify what you do and do not want done...."
-        sleep 2
-        questions
-fi
 echo "2"
 # Logic for update and configuration steps
 if [[ $answerFirstRun = y ]] ; then
