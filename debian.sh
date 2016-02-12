@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # Debian 5 Lenny Configuration and Updater version 2.0
 # This script is intended for use in Debian Linux Installations
 # Thanks to Pashapasta for the script template, check out the Kali version at https://github.com/PashaPasta/KaliUpdater/blob/master/KaliConfigAndUpdate.sh
@@ -22,7 +21,7 @@ printf "
 # Questions function
 function questions() {
 read -p "Is this the first time this script has been run? [y/n]" answerFirstRun
-read -p "Do you want to turn off root login, Ipv6, keep boot as read only,and ignore ICMP broadcast requests and prevent XSS attacks? [y/n]" answermasshardening
+read -p "Do you want to turn off root login, Ipv6, keep boot as read only,and ignore ICMP broadcast requests and prevent XSS attacks? [y/n]" answerrootkits
 read -p "Do you want to install Lynis [y/n]" answerLynis
 read -p "Do you want to install Clamav [y/n]" answerClamav
 }
@@ -114,20 +113,46 @@ if  [[$answerFixRepos = y]] ; then
 fi
 
 
-if [[ $answermasshardening = y ]] ; then
-    #disable rootlogin
-    sudo sed -i 's/PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config  #automated above lines for ssh config
-    #ignore ICMP/Pings
-    sudo echo Ignore ICMP request: >> /etc/sysctl.conf
-    sudo echo net.ipv4.icmp_echo_ignore_all = 1 >> /etc/sysctl.conf
-    sudo echo Ignore Broadcast request: >> /etc/sysctl.conf
-    sudo echo net.ipv4.icmp_echo_ignore_broadcasts = 1 >> /etc/sysctl.conf
-    sysctl -p
+if [[ $answerrootkits = y ]] ; then
+    #!/bin/bash
+	cd ~
+	wget http://downloads.sourceforge.net/project/rkhunter/rkhunter/1.4.2/rkhunter-1.4.2.tar.gz
+	tar xzvf rkhunter*
+	cd rkhunter*
+	sudo ./installer.sh --layout /usr --install
+	sudo apt-get update
+	sudo apt-get install binutils libreadline5 libruby1.9 ruby ruby1.9 ssl-cert unhide.rb mailutils 
+	sudo apt-get install prelink
+	sudo rkhunter --versioncheck
+	sudo rkhunter --update
+	sudo rkhunter --propupd
+	#only shows warning to screen
+	sudo rkhunter -c --enable all --disable none --rwo
+	#shows everything
+	#sudo rkhunter -c --enable all --disable none
+	#cat /var/log/rkhunter.log | grep Warning
+	#https://www.digitalocean.com/community/tutorials/how-to-use-rkhunter-to-guard-against-rootkits-on-an-ubuntu-vps
+
+
+	# install chkrootkit
+	apt-get install chkrootkit
+	sudo chkrootkit
+	cd ~
 fi
 
 if [[ $answerLynis = y ]] ; then
-    wget https://cisofy.com/files/lynis-1.6.4.tar.gz -O lynis.tar.gz --no-check-certificate
-    tar -zxvf lynis.tar.gz
+    wget --no-check-certificate https://cisofy.com/files/lynis-2.1.1.tar.gz
+	tar -xzvf lynis-2.1.1.tar.gz
+	cd lynis
+	chmod a+x lynis
+	./lynis audit system -Q
+
+	echo "Warnings:\n"  > lynis_log
+	cat /var/log/lynis-report.dat | grep warning | sed –e ‘s/warning\[\]\=//g’ >> lynis_log
+	echo "Suggestions:\n " >> lynis_log
+	cat /var/log/lynis-report.dat | grep suggestion | sed –e ‘s/suggestion\[\]\=//g’ >> lynis_log
+	echo "available_shells:\n" >> lynis_log
+	cat /var/log/lynis-report.dat | grep available_shell | sed –e ‘s/available_shell\[\]\=//g’ >> lynis_log
 	echo "To run lynis, go to lynis directory and: ./lynis audit system -Q"
 fi
 
@@ -158,4 +183,4 @@ function pause () {
 
 pause '
 Press [Enter] key to exit...
-'
+'  
