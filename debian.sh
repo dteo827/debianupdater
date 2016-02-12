@@ -42,7 +42,7 @@ if [[ $1 = -a ]] ; then
     read -p "Are you sure you want to install all packages and configure everything by default? Only Security Updates will be installed [y/n] " answerWarning
     if [[ $answerWarning = y ]] ; then
         answerUpdateBash=y
-		answerGoogleDNS=y        
+	answerGoogleDNS=y        
         answerFixRepos=y
         answermasshardening=y
         answerLynis=y
@@ -62,23 +62,23 @@ fi
 if [[ $answerFirstRun = y ]] ; then
 	answerUpdateBash=y 
 	answerGoogleDNS=y
-    answerFixRepos=y
+    	answerFixRepos=y
 fi
 	
 if [[ $answerUpdateBash = y ]] ; then
 	wget --no-check-certificate https://raw.githubusercontent.com/dteo827/debainupdater/master/hardscript.sh/
-    cd /src
-    wget http://ftp.gnu.org/gnu/bash/bash-4.3.tar.gz
-    #download all patches
-    for i in $(seq -f "%03g" 1 28); do wget http://ftp.gnu.org/gnu/bash/bash-4.3-patches/bash43-$i; done
-    tar zxvf bash-4.3.tar.gz
-    cd bash-4.3
-    #apply all patches
-    for i in $(seq -f "%03g" 1 28);do patch -p0 < ../bash43-$i; done
-    #build and install
-    ./configure --prefix=/ && make && make install
-    cd /root
-    rm -r src
+    	cd /src
+    	wget http://ftp.gnu.org/gnu/bash/bash-4.3.tar.gz
+    	#download all patches
+    	for i in $(seq -f "%03g" 1 28); do wget http://ftp.gnu.org/gnu/bash/bash-4.3-patches/bash43-$i; done
+    	tar zxvf bash-4.3.tar.gz
+    	cd bash-4.3
+    	#apply all patches
+    	for i in $(seq -f "%03g" 1 28);do patch -p0 < ../bash43-$i; done
+    	#build and install
+    	./configure --prefix=/ && make && make install
+    	cd /root
+    	rm -r src
 fi
 
 if [[ $answerGoogleDNS = y ]] ; then
@@ -89,11 +89,11 @@ if [[ $answerGoogleDNS = y ]] ; then
 fi
 
 if  [[$answerFixRepos = y]] ; then
-     #change old repos to archive.ubuntu so they work
-    cp /etc/apt/sources.list /etc/apt/sources.list.bak
-    #actual list
-    echo deb http://archive.debian.org/debian-archive/debian/ lenny main contrib non-free > /etc/apt/sources.list 
-    echo deb http://archive.debian.org/debian-security/ lenny/updates main contrib non-free >> /etc/apt/sources.list 
+     	#change old repos to archive.ubuntu so they work
+    	cp /etc/apt/sources.list /etc/apt/sources.list.bak
+    	#actual list
+    	echo deb http://archive.debian.org/debian-archive/debian/ lenny main contrib non-free > /etc/apt/sources.list 
+    	echo deb http://archive.debian.org/debian-security/ lenny/updates main contrib non-free >> /etc/apt/sources.list 
 	echo deb http://archive.debian.org/debian/ lenny main contrib non-free >> /etc/apt/sources.list 
 	echo deb http://archive.debian.org/debian-backports/ lenny-backports main >> /etc/apt/sources.list 
 	echo deb http://archive.debian.org/debian-backports/ lenny-backports-sloppy main >> /etc/apt/sources.list
@@ -141,7 +141,7 @@ if [[ $answerrootkits = y ]] ; then
 fi
 
 if [[ $answerLynis = y ]] ; then
-    wget --no-check-certificate https://cisofy.com/files/lynis-2.1.1.tar.gz
+    	wget --no-check-certificate https://cisofy.com/files/lynis-2.1.1.tar.gz
 	tar -xzvf lynis-2.1.1.tar.gz
 	cd lynis
 	chmod a+x lynis
@@ -157,7 +157,7 @@ if [[ $answerLynis = y ]] ; then
 fi
 
 if [[ $answerClamav = y ]] ; then
-    sudo apt-get install clamav clamav-base clamav-daemon clamav-freshclam openssl libxml2 libpcre3 libclamav2 build-essential
+    	sudo apt-get install clamav clamav-base clamav-daemon clamav-freshclam openssl libxml2 libpcre3 libclamav2 build-essential
 	nano /usr/local/etc/freshclam.conf
 	mkdir /usr/local/share/clamav
 	echo "Replace UID:GID with Clamav's user ID and group ID from /etc/passwd & /etc/group "
