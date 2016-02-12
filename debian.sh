@@ -36,7 +36,7 @@ echo
 echo "my name" >> file
 echo
 echo dpkg -l >> file
-if answer
+
 if [[ $1 = -a ]] ; then
 
     read -p "Are you sure you want to install all packages and configure everything by default? Only Security Updates will be installed [y/n] " answerWarning
@@ -51,11 +51,6 @@ if [[ $1 = -a ]] ; then
         printf "Verify what you do and do not want done...."
         sleep 2
         questions
-fi
-
-else
-    echo "unknown command"
-    questions
 fi
 
 # Logic for update and configuration steps
