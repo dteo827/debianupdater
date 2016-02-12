@@ -105,7 +105,7 @@ if  [[$answerFixRepos = y]] ; then
 	To update the key, run
 	sudo apt-key adv --recv-keys --keyserver keys.gnupg.net BE1DB1F1"
 	apt-get update
-	###^doens't actually donwload anything, only updates the list of avalible packages
+	###^does not actually donwload anything, only updates the list of avalible packages
     echo "Updated Source list, this task was completed at: " $(date) >> changes
 fi
 
@@ -157,7 +157,7 @@ if [[ $answerClamav = y ]] ; then
     sudo apt-get install clamav clamav-base clamav-daemon clamav-freshclam openssl libxml2 libpcre3 libclamav2 build-essential
 	nano /usr/local/etc/freshclam.conf
 	mkdir /usr/local/share/clamav
-	echo "Replace UID:GID with Clamav's user ID and group ID from /etc/passwd & /etc/group "
+	echo "Replace UID:GID with Clamavs user ID and group ID from /etc/passwd & /etc/group "
 	echo "chown UID:GID /var/lib/clamav & chmod 775 /var/lib/clamav"
 	echo "chown UID:GID /usr/local/share/clamav & chmod 777 /usr/local/share/clamav"
 	freshclam
