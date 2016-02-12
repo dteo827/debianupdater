@@ -68,7 +68,7 @@ if [[ $answerGoogleDNS = y ]] ; then
     echo "Updated DNS resolutions to Google DNS, this task was completed at: " $(date) >> changes
 fi
 echo "5"
-if  [[$answerFixRepos = y]] ; then
+if  [[ $answerFixRepos = y]] ; then
     #change old repos to archive.ubuntu so they work
     cp /etc/apt/sources.list /etc/apt/sources.list.bak
     #actual list
