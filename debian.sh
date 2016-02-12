@@ -21,7 +21,7 @@ printf "
 # Questions function
 function questions() {
 read -p "Is this the first time this script has been run? [y/n]" answerFirstRun
-read -p "Do you want to turn off root login, Ipv6, keep boot as read only,and ignore ICMP broadcast requests and prevent XSS attacks? [y/n]" answerrootkits
+read -p "Do you want to install rkhunter and chkrootkit? [y/n]" answerrootkits
 read -p "Do you want to install Lynis [y/n]" answerLynis
 read -p "Do you want to install Clamav [y/n]" answerClamav
 }
