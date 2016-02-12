@@ -37,14 +37,15 @@ echo "my name" >> file
 echo
 echo dpkg -l >> file
 
-echo "2"
+questions
+
 # Logic for update and configuration steps
 if [[ $answerFirstRun = y ]] ; then
 	answerUpdateBash=y 
 	answerGoogleDNS=y
     answerFixRepos=y
 fi
-echo "3"	
+	
 if [[ $answerUpdateBash = y ]] ; then
 	wget --no-check-certificate https://raw.githubusercontent.com/dteo827/debainupdater/master/hardscript.sh/
     	cd /src
@@ -60,15 +61,15 @@ if [[ $answerUpdateBash = y ]] ; then
     	cd /root
     	rm -r src
 fi
-echo "4"
+
 if [[ $answerGoogleDNS = y ]] ; then
 
     echo nameserver 8.8.8.8 >> /etc/resolv.conf
     echo nameserver 8.8.4.4 >> /etc/resolv.conf
     echo "Updated DNS resolutions to Google DNS, this task was completed at: " $(date) >> changes
 fi
-echo "5"
-if  [[ $answerFixRepos = y]] ; then
+
+if  [[ $answerFixRepos = y ]] ; then
     #change old repos to archive.ubuntu so they work
     cp /etc/apt/sources.list /etc/apt/sources.list.bak
     #actual list
@@ -88,7 +89,7 @@ if  [[ $answerFixRepos = y]] ; then
 	###^does not actually donwload anything, only updates the list of avalible packages
     echo "Updated Source list, this task was completed at: " $(date) >> changes
 fi
-echo "6"
+
 
 if [[ $answerrootkits = y ]] ; then
     #!/bin/bash
@@ -116,7 +117,7 @@ if [[ $answerrootkits = y ]] ; then
 	sudo chkrootkit
 	cd ~
 fi
-echo "7"
+
 if [[ $answerLynis = y ]] ; then
     wget --no-check-certificate https://cisofy.com/files/lynis-2.1.1.tar.gz
 	tar -xzvf lynis-2.1.1.tar.gz
@@ -132,7 +133,7 @@ if [[ $answerLynis = y ]] ; then
 	cat /var/log/lynis-report.dat | grep available_shell | sed –e ‘s/available_shell\[\]\=//g’ >> lynis_log
 	echo "To run lynis, go to lynis directory and: ./lynis audit system -Q"
 fi
-echo "8"
+
 if [[ $answerClamav = y ]] ; then
     sudo apt-get install clamav clamav-base clamav-daemon clamav-freshclam openssl libxml2 libpcre3 libclamav2 build-essential
 	nano /usr/local/etc/freshclam.conf
@@ -144,7 +145,7 @@ if [[ $answerClamav = y ]] ; then
 	clamscan -r /etc /tmp /home/* /root
 
 fi
-echo "9"
+
 echo "version"
 lsb_release -r >> file
 uname -r >> file
