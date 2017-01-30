@@ -1,6 +1,6 @@
 #!/bin/bash
 wget --no-check-certificate https://cisofy.com/files/lynis-2.4.0.tar.gz
-tar -xzvf lynis-2.1.1.tar.gz
+tar -xzvf lynis-2.4.0.tar.gz
 cd lynis
 chmod a+x lynis
 ./lynis audit system -Q
