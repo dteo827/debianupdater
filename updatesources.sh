@@ -15,3 +15,5 @@ deb http://archive.debian.org/debian-archive/debian/ lenny main contrib non-free
 deb http://archive.debian.org/debian-security/ lenny/updates main contrib non-free >> /etc/apt/sources.list 
 deb http://archive.debian.org/debian-backports/ lenny-backports main >> /etc/apt/sources.list 
 deb http://archive.debian.org/debian-backports/ lenny-backports-sloppy main >> /etc/apt/sources.list
+
+gpg  --keyserver subkeys.pgp.net  --recv-keys DFD993306D849617
